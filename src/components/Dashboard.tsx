@@ -36,6 +36,7 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      setUserId(user.id);
 
       const today = new Date();
       const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();

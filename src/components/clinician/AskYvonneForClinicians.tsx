@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import yvonneAvatar from '@/assets/yvonne-avatar.png';
 import { Send, Bot, User, AlertCircle, HelpCircle, FileText, Pill, Calendar, TrendingUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";

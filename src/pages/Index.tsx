@@ -205,7 +205,7 @@ const Index = () => {
       case "appointments":
         return userId ? <AppointmentViewing userId={userId} /> : null;
       case "messages":
-        return userId ? <MessagingCenter userId={userId} userRole="patient" /> : null;
+        return userId ? <MessagingCenter userRole="patient" /> : null;
       case "progress":
         return userId ? <ProgressDashboard userId={userId} /> : null;
       case "education":

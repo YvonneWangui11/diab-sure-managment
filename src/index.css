@@ -152,5 +152,36 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus visible for keyboard accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Ensure minimum touch targets on mobile */
+  @media (pointer: coarse) {
+    button, a, [role="button"], [role="tab"], input, select, textarea {
+      min-height: 44px;
+    }
+  }
+}
+
+/* Safe area for mobile bottom navigation */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Skip to main content - accessibility */
+.sr-only-focusable:not(:focus) {
+  @apply sr-only;
+}
+
+/* Smooth page transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-in {
+    animation-duration: 200ms;
   }
 }

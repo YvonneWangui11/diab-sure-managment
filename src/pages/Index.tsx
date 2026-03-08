@@ -4,7 +4,9 @@ import { LandingPage } from "@/components/LandingPage";
 import { AuthPage } from "@/components/AuthPage";
 import { FloatingYvonneButton } from "@/components/FloatingYvonneButton";
 import { PageLoader } from "@/components/LoadingSpinner";
+import { PageErrorBoundary } from "@/components/ErrorBoundary";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
+import { DashboardSkeleton, GlucoseTrackingSkeleton, MedicationSkeleton, AppointmentsSkeleton, MessagesSkeleton } from "@/components/ui/skeleton-loaders";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,11 +29,17 @@ type AuthMode = "patient" | "clinician" | null;
 
 const ROLE_STORAGE_KEY = "diabesure_active_role";
 
-const SuspenseFallback = () => (
-  <div className="flex justify-center items-center h-64">
-    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
-  </div>
-);
+// Skeleton map for each page
+const getPageSkeleton = (page: string) => {
+  switch (page) {
+    case "dashboard": return <DashboardSkeleton />;
+    case "glucose": return <GlucoseTrackingSkeleton />;
+    case "medications": return <MedicationSkeleton />;
+    case "appointments": return <AppointmentsSkeleton />;
+    case "messages": return <MessagesSkeleton />;
+    default: return <DashboardSkeleton />;
+  }
+};
 
 const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,7 +73,6 @@ const Index = () => {
       setUserRoles(roles);
       
       const savedRole = localStorage.getItem(ROLE_STORAGE_KEY) as UserRole | null;
-      
       if (savedRole && roles.includes(savedRole)) {
         setActiveRole(savedRole);
       } else {
@@ -86,13 +93,11 @@ const Index = () => {
     const initializeAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        
         if (error) {
           console.error('Session error:', error);
           if (mounted) setIsInitializing(false);
           return;
         }
-
         if (session && mounted) {
           setIsLoggedIn(true);
           setUserId(session.user.id);
@@ -110,7 +115,6 @@ const Index = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
-
         if (event === 'SIGNED_IN' && session) {
           setIsLoggedIn(true);
           setUserId(session.user.id);
@@ -127,42 +131,24 @@ const Index = () => {
       }
     );
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => { mounted = false; subscription.unsubscribe(); };
   }, [loadUserRoles]);
 
-  const handleGetStarted = () => {
-    setAuthMode("patient");
-    setShowAuth(true);
-  };
-
-  const handleClinicianAccess = () => {
-    setAuthMode("clinician");
-    setShowAuth(true);
-  };
-
-  const handleAuthSuccess = () => {
-    setShowAuth(false);
-    setAuthMode(null);
-  };
+  const handleGetStarted = () => { setAuthMode("patient"); setShowAuth(true); };
+  const handleClinicianAccess = () => { setAuthMode("clinician"); setShowAuth(true); };
+  const handleAuthSuccess = () => { setShowAuth(false); setAuthMode(null); };
 
   const handleRoleSwitch = (newRole: UserRole) => {
     setActiveRole(newRole);
     localStorage.setItem(ROLE_STORAGE_KEY, newRole);
     setCurrentPage("dashboard");
-    toast({
-      title: "Role switched",
-      description: `You are now viewing the ${newRole} dashboard.`,
-    });
+    toast({ title: "Role switched", description: `You are now viewing the ${newRole} dashboard.` });
   };
 
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
       setIsLoggedIn(false);
       setUserRoles([]);
       setActiveRole(null);
@@ -170,45 +156,26 @@ const Index = () => {
       setShowAuth(false);
       setCurrentPage("dashboard");
       localStorage.removeItem(ROLE_STORAGE_KEY);
-      
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
+      toast({ title: "Signed out", description: "You have been successfully signed out." });
     } catch (error) {
       console.error('Sign out error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to sign out. Please try again.", variant: "destructive" });
     }
   };
 
   const renderPatientPage = () => {
     switch (currentPage) {
-      case "dashboard":
-        return <Dashboard onNavigate={setCurrentPage} />;
-      case "glucose":
-        return userId ? <GlucoseTracking userId={userId} /> : null;
-      case "medications":
-        return userId ? <PatientMedicationTracking userId={userId} /> : null;
-      case "nutrition":
-        return userId ? <NutritionTrackingEnhanced userId={userId} /> : null;
-      case "exercise":
-        return userId ? <ExerciseTrackingEnhanced userId={userId} /> : null;
-      case "appointments":
-        return userId ? <AppointmentViewing userId={userId} /> : null;
-      case "messages":
-        return userId ? <MessagingCenter userRole="patient" /> : null;
-      case "progress":
-        return userId ? <ProgressDashboard userId={userId} /> : null;
-      case "education":
-        return <EducationHub />;
-      case "profile":
-        return <ProfilePage onSignOut={handleSignOut} />;
-      default:
-        return <Dashboard onNavigate={setCurrentPage} />;
+      case "dashboard": return <Dashboard onNavigate={setCurrentPage} />;
+      case "glucose": return userId ? <GlucoseTracking userId={userId} /> : null;
+      case "medications": return userId ? <PatientMedicationTracking userId={userId} /> : null;
+      case "nutrition": return userId ? <NutritionTrackingEnhanced userId={userId} /> : null;
+      case "exercise": return userId ? <ExerciseTrackingEnhanced userId={userId} /> : null;
+      case "appointments": return userId ? <AppointmentViewing userId={userId} /> : null;
+      case "messages": return userId ? <MessagingCenter userRole="patient" /> : null;
+      case "progress": return userId ? <ProgressDashboard userId={userId} /> : null;
+      case "education": return <EducationHub />;
+      case "profile": return <ProfilePage onSignOut={handleSignOut} />;
+      default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };
 
@@ -225,37 +192,29 @@ const Index = () => {
   }
 
   const roleSwitcherElement = userRoles.length > 1 && activeRole ? (
-    <RoleSwitcher 
-      currentRole={activeRole} 
-      availableRoles={userRoles} 
-      onRoleChange={handleRoleSwitch} 
-    />
+    <RoleSwitcher currentRole={activeRole} availableRoles={userRoles} onRoleChange={handleRoleSwitch} />
   ) : undefined;
 
   if (activeRole === 'clinician') {
     return (
-      <Suspense fallback={<PageLoader text="Loading clinician dashboard..." />}>
-        <ClinicianDashboardRefactored 
-          onSignOut={handleSignOut}
-          roleSwitcher={roleSwitcherElement}
-        />
-      </Suspense>
+      <PageErrorBoundary>
+        <Suspense fallback={<PageLoader text="Loading clinician dashboard..." />}>
+          <ClinicianDashboardRefactored onSignOut={handleSignOut} roleSwitcher={roleSwitcherElement} />
+        </Suspense>
+      </PageErrorBoundary>
     );
   }
 
   if (activeRole === 'admin') {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation 
-          currentPage={currentPage} 
-          onPageChange={setCurrentPage}
-          onSignOut={handleSignOut}
-          roleSwitcher={roleSwitcherElement}
-        />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Suspense fallback={<SuspenseFallback />}>
-            <AdminDashboard />
-          </Suspense>
+        <Navigation currentPage={currentPage} onPageChange={setCurrentPage} onSignOut={handleSignOut} roleSwitcher={roleSwitcherElement} />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+          <PageErrorBoundary>
+            <Suspense fallback={<DashboardSkeleton />}>
+              <AdminDashboard />
+            </Suspense>
+          </PageErrorBoundary>
         </main>
         <FloatingYvonneButton />
       </div>
@@ -264,16 +223,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation 
-        currentPage={currentPage} 
-        onPageChange={setCurrentPage}
-        onSignOut={handleSignOut}
-        roleSwitcher={roleSwitcherElement}
-      />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Suspense fallback={<SuspenseFallback />}>
-          {renderPatientPage()}
-        </Suspense>
+      <Navigation currentPage={currentPage} onPageChange={setCurrentPage} onSignOut={handleSignOut} roleSwitcher={roleSwitcherElement} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-8" role="main">
+        <PageErrorBoundary key={currentPage}>
+          <Suspense fallback={getPageSkeleton(currentPage)}>
+            {renderPatientPage()}
+          </Suspense>
+        </PageErrorBoundary>
       </main>
       <FloatingYvonneButton />
     </div>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Activity, Timer, Plus, Target, Flame } from "lucide-react";
@@ -260,16 +261,16 @@ export const ExerciseTrackingEnhanced = ({ userId }: ExerciseTrackingEnhancedPro
                 </div>
                 <div>
                   <Label htmlFor="intensity">Intensity</Label>
-                  <select
-                    id="intensity"
-                    value={newExercise.intensity}
-                    onChange={(e) => setNewExercise({ ...newExercise, intensity: e.target.value })}
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                  >
-                    <option value="low">Low</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="high">High</option>
-                  </select>
+                  <Select value={newExercise.intensity} onValueChange={(val) => setNewExercise({ ...newExercise, intensity: val })}>
+                    <SelectTrigger id="intensity">
+                      <SelectValue placeholder="Select intensity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="moderate">Moderate</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div>

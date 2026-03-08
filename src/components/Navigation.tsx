@@ -19,6 +19,7 @@ const menuItems = [
   { id: "exercise", label: "Exercise", icon: Dumbbell },
   { id: "glucose-trends", label: "Insights", icon: BarChart3 },
   { id: "weekly-report", label: "Report", icon: FileText },
+  { id: "engagement", label: "Progress", icon: Trophy },
   { id: "appointments", label: "Appts", icon: Calendar },
   { id: "messages", label: "Messages", icon: MessageSquare },
   { id: "profile", label: "Profile", icon: User },

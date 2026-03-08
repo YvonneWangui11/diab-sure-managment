@@ -275,6 +275,9 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('risk-assessment')}>
                 <Shield className="h-4 w-4 mr-2" /> Risk Assessment
               </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('engagement')}>
+                <Trophy className="h-4 w-4 mr-2" /> My Progress
+              </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('messages')}>
                 <MessageSquare className="h-4 w-4 mr-2" /> Messages {unread > 0 && <Badge variant="destructive" className="ml-auto text-xs">{unread}</Badge>}
               </Button>

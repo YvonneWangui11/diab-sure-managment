@@ -33,8 +33,16 @@ interface AskYvonneProps {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+const STORAGE_KEY_PREFIX = "yvonne_chat_";
+
 export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const storageKey = `${STORAGE_KEY_PREFIX}${mode}`;
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);

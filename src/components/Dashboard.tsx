@@ -131,6 +131,9 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
     <div className="space-y-6">
       <AnnouncementBanner userRole={userRole} />
 
+      {/* Engagement Widget */}
+      {userId && <EngagementWidget userId={userId} compact />}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">{greeting}, {firstName}!</h1>

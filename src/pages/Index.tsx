@@ -190,6 +190,7 @@ const Index = () => {
       case "risk-assessment": return userId ? <RiskStratification userId={userId} /> : null;
       case "quick-log": return userId ? <NaturalLanguageLogger userId={userId} /> : null;
       case "predictive-alerts": return userId ? <PredictiveGlucoseAlerts userId={userId} /> : null;
+      case "engagement": return userId ? <EngagementDashboard userId={userId} /> : null;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

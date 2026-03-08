@@ -53,7 +53,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
       if (!user) return;
       setUser(user);
 
-      const { data: profile } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('*').eq('user_id', user.id).maybeSingle();
 
       if (profile) {
         setProfileData(prev => ({

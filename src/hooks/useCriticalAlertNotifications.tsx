@@ -118,7 +118,7 @@ export const useCriticalAlertNotifications = ({
       .from("profiles")
       .select("full_name")
       .eq("user_id", alert.patient_id)
-      .single();
+      .maybeSingle();
 
     const patientName = profile?.full_name || "Unknown Patient";
 

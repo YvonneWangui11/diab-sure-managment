@@ -28,7 +28,7 @@ export const PatientDataExport = () => {
       prescriptionsResult,
       medicationRemindersResult,
     ] = await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("patient_details").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("glucose_readings").select("*").eq("patient_id", user.id).order("created_at", { ascending: false }),
       supabase.from("medications").select("*").eq("patient_id", user.id).order("created_at", { ascending: false }),

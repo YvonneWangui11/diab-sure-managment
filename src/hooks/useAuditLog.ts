@@ -17,7 +17,7 @@ export function useAuditLog() {
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       await supabase.from("audit_logs").insert({
         actor_id: user.id,

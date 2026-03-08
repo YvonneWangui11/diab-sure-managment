@@ -91,7 +91,7 @@ export const ConsentManager = () => {
         .from("profiles")
         .select("consent_flags")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (profile?.consent_flags && typeof profile.consent_flags === "object") {
         const flags = { ...DEFAULT_CONSENT, ...(profile.consent_flags as Record<string, unknown>) } as ConsentFlags;

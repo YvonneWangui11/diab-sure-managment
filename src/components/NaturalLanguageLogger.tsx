@@ -159,7 +159,7 @@ export const NaturalLanguageLogger = ({ userId }: NaturalLanguageLoggerProps) =>
               placeholder="e.g., 'Walked 30 minutes and had ugali for lunch'"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
               disabled={isParsing}
               className="flex-1 h-12 text-base"
             />

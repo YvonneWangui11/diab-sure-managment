@@ -53,7 +53,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
       if (!user) return;
       setUser(user);
 
-      const { data: profile } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+      const { data: profile } = await supabase.from('profiles').select('*').eq('user_id', user.id).maybeSingle();
 
       if (profile) {
         setProfileData(prev => ({
@@ -69,7 +69,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
         setUserRole(role);
 
         if (role === 'clinician') {
-          const { data: doctorDetails } = await supabase.from('doctor_details').select('*').eq('user_id', user.id).single();
+          const { data: doctorDetails } = await supabase.from('doctor_details').select('*').eq('user_id', user.id).maybeSingle();
           if (doctorDetails) {
             setProfileData(prev => ({
               ...prev,
@@ -82,7 +82,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
             }));
           }
         } else if (role === 'patient') {
-          const { data: patientDetails } = await supabase.from('patient_details').select('*').eq('user_id', user.id).single();
+          const { data: patientDetails } = await supabase.from('patient_details').select('*').eq('user_id', user.id).maybeSingle();
           if (patientDetails) {
             setProfileData(prev => ({
               ...prev,

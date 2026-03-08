@@ -446,7 +446,7 @@ export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => 
             placeholder={getPlaceholder()}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             disabled={isLoading || isRecording || isTranscribing}
             className="flex-1 h-12 px-4 text-base rounded-full border-2 focus:border-primary transition-colors"
           />

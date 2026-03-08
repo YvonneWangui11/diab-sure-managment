@@ -308,7 +308,7 @@ Be helpful, concise, and professional. When explaining app features, be specific
             placeholder="Ask about app features, workflows, or patient education..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             disabled={isLoading}
             className="flex-1 h-10 px-4 text-sm rounded-full border focus:border-primary transition-colors"
           />

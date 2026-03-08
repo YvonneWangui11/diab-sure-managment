@@ -493,6 +493,41 @@ export const EducationHub = () => {
               </Card>
             ))}
           </div>
+
+          {/* Uploaded Resources */}
+          {uploadedResources.length > 0 && (
+            <>
+              <h3 className="text-lg font-semibold mt-6 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Uploaded Resources
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {uploadedResources.map((resource) => (
+                  <Card key={resource.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <FileText className="h-10 w-10 text-primary" />
+                        <Badge variant="secondary">{resource.category}</Badge>
+                      </div>
+                      <CardTitle className="text-lg">{resource.title}</CardTitle>
+                      {resource.description && <CardDescription>{resource.description}</CardDescription>}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {resource.file_size ? `${(resource.file_size / (1024 * 1024)).toFixed(1)} MB` : "PDF"}
+                        </span>
+                        <Button size="sm" onClick={() => downloadUploadedPDF(resource)}>
+                          <Download className="h-4 w-4 mr-2" />
+                          Download PDF
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
         </TabsContent>
 
         {/* Prevention Guide */}

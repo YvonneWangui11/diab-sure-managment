@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Heart, Activity, Calendar, BookOpen, User, LogOut, TrendingUp, Apple, Dumbbell, Droplet } from "lucide-react";
+import { Menu, X, Heart, Activity, Calendar, BookOpen, User, LogOut, TrendingUp, Apple, Dumbbell, Droplet, Pill, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NavigationProps {

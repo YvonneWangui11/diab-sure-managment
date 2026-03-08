@@ -11,11 +11,15 @@ import {
   Lightbulb,
   TrendingUp,
   Shield,
-  Brain
+  Brain,
+  FileText,
+  Upload
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { EducationUploadManager } from "./EducationUploadManager";
 
 const healthTips = [
   {

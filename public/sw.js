@@ -1,7 +1,8 @@
-const CACHE_NAME = 'diabesure-v1';
+const CACHE_NAME = 'diabesure-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/manifest.json',
 ];
 
 // Install: cache app shell
@@ -26,7 +27,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for assets
+// Fetch: network-first for API, stale-while-revalidate for assets
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -34,10 +35,13 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Skip supabase API calls - always network
+  // Skip supabase API calls and edge functions - always network
   if (url.hostname.includes('supabase') || url.pathname.includes('/functions/')) {
     return;
   }
+
+  // Skip chrome-extension and other non-http schemes
+  if (!url.protocol.startsWith('http')) return;
 
   // For navigation requests, try network first then cache
   if (request.mode === 'navigate') {
@@ -53,9 +57,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For assets (JS, CSS, images): stale-while-revalidate
+  // For assets (JS, CSS, images, fonts): stale-while-revalidate
   if (
-    url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|ico|woff2?)$/) ||
+    url.pathname.match(/\.(js|css|png|jpg|jpeg|svg|ico|woff2?|webp|avif)$/) ||
     url.pathname.startsWith('/assets/')
   ) {
     event.respondWith(
@@ -73,4 +77,45 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
+});
+
+// Push notification handling
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+
+  try {
+    const data = event.data.json();
+    const options = {
+      body: data.body || 'New notification from DiabeSure',
+      icon: '/favicon.ico',
+      badge: '/favicon.ico',
+      tag: data.tag || 'diabesure-notification',
+      data: data.url ? { url: data.url } : undefined,
+      actions: data.actions || [],
+      vibrate: [200, 100, 200],
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'DiabeSure', options)
+    );
+  } catch (e) {
+    console.error('Push notification error:', e);
+  }
+});
+
+// Notification click handling
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || '/';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((clients) => {
+      for (const client of clients) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.focus();
+          return;
+        }
+      }
+      self.clients.openWindow(url);
+    })
+  );
 });

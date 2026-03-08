@@ -3,10 +3,15 @@ import { Navigation } from "@/components/Navigation";
 import { LandingPage } from "@/components/LandingPage";
 import { AuthPage } from "@/components/AuthPage";
 import { FloatingYvonneButton } from "@/components/FloatingYvonneButton";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { InactivityWarning } from "@/components/InactivityWarning";
+import { KeyboardShortcutsHelp } from "@/components/KeyboardShortcutsHelp";
 import { PageLoader } from "@/components/LoadingSpinner";
 import { PageErrorBoundary } from "@/components/ErrorBoundary";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { DashboardSkeleton, GlucoseTrackingSkeleton, MedicationSkeleton, AppointmentsSkeleton, MessagesSkeleton } from "@/components/ui/skeleton-loaders";
+import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -37,7 +42,6 @@ type AuthMode = "patient" | "clinician" | null;
 
 const ROLE_STORAGE_KEY = "diabesure_active_role";
 
-// Skeleton map for each page
 const getPageSkeleton = (page: string) => {
   switch (page) {
     case "dashboard": return <DashboardSkeleton />;
@@ -58,7 +62,54 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<AuthMode>(null);
   const [userId, setUserId] = useState<string>("");
   const [isInitializing, setIsInitializing] = useState(true);
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
   const { toast } = useToast();
+
+  const handleSignOut = useCallback(async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setIsLoggedIn(false);
+      setUserRoles([]);
+      setActiveRole(null);
+      setUserId("");
+      setShowAuth(false);
+      setCurrentPage("dashboard");
+      localStorage.removeItem(ROLE_STORAGE_KEY);
+      toast({ title: "Signed out", description: "You have been successfully signed out." });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      toast({ title: "Error", description: "Failed to sign out. Please try again.", variant: "destructive" });
+    }
+  }, [toast]);
+
+  // Session inactivity timeout (15 min idle = warning at 13 min)
+  const { showWarning, remainingSeconds, stayActive } = useInactivityTimeout({
+    timeoutMs: 15 * 60 * 1000,
+    warningMs: 13 * 60 * 1000,
+    onTimeout: handleSignOut,
+    enabled: isLoggedIn,
+  });
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts((page) => {
+    if (isLoggedIn && activeRole === "patient") {
+      setCurrentPage(page);
+    }
+  }, isLoggedIn && activeRole === "patient");
+
+  // Listen for "?" key to show shortcuts help
+  useEffect(() => {
+    const handleQuestion = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) return;
+      if (e.key === "?" && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        setShowShortcutsHelp(true);
+      }
+    };
+    document.addEventListener("keydown", handleQuestion);
+    return () => document.removeEventListener("keydown", handleQuestion);
+  }, []);
 
   const loadUserRoles = useCallback(async (uid: string) => {
     try {
@@ -153,24 +204,6 @@ const Index = () => {
     toast({ title: "Role switched", description: `You are now viewing the ${newRole} dashboard.` });
   };
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      setIsLoggedIn(false);
-      setUserRoles([]);
-      setActiveRole(null);
-      setUserId("");
-      setShowAuth(false);
-      setCurrentPage("dashboard");
-      localStorage.removeItem(ROLE_STORAGE_KEY);
-      toast({ title: "Signed out", description: "You have been successfully signed out." });
-    } catch (error) {
-      console.error('Sign out error:', error);
-      toast({ title: "Error", description: "Failed to sign out. Please try again.", variant: "destructive" });
-    }
-  };
-
   const renderPatientPage = () => {
     switch (currentPage) {
       case "dashboard": return <Dashboard onNavigate={setCurrentPage} />;
@@ -200,7 +233,12 @@ const Index = () => {
   }
 
   if (!isLoggedIn && !showAuth) {
-    return <LandingPage onGetStarted={handleGetStarted} onClinicianAccess={handleClinicianAccess} />;
+    return (
+      <>
+        <LandingPage onGetStarted={handleGetStarted} onClinicianAccess={handleClinicianAccess} />
+        <PWAInstallPrompt />
+      </>
+    );
   }
 
   if (showAuth) {
@@ -217,6 +255,8 @@ const Index = () => {
         <Suspense fallback={<PageLoader text="Loading clinician dashboard..." />}>
           <ClinicianDashboardRefactored onSignOut={handleSignOut} roleSwitcher={roleSwitcherElement} />
         </Suspense>
+        <InactivityWarning open={showWarning} remainingSeconds={remainingSeconds} onStayActive={stayActive} onLogout={handleSignOut} />
+        <PWAInstallPrompt />
       </PageErrorBoundary>
     );
   }
@@ -233,6 +273,8 @@ const Index = () => {
           </PageErrorBoundary>
         </main>
         <FloatingYvonneButton />
+        <InactivityWarning open={showWarning} remainingSeconds={remainingSeconds} onStayActive={stayActive} onLogout={handleSignOut} />
+        <PWAInstallPrompt />
       </div>
     );
   }
@@ -248,6 +290,9 @@ const Index = () => {
         </PageErrorBoundary>
       </main>
       <FloatingYvonneButton />
+      <InactivityWarning open={showWarning} remainingSeconds={remainingSeconds} onStayActive={stayActive} onLogout={handleSignOut} />
+      <KeyboardShortcutsHelp open={showShortcutsHelp} onOpenChange={setShowShortcutsHelp} />
+      <PWAInstallPrompt />
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Heart, Pill, Apple, Activity, Calendar, TrendingUp,
-  MessageSquare, BookOpen, BarChart3, FileText, Shield, Utensils, Dumbbell
+  MessageSquare, BookOpen, BarChart3, FileText, Shield, Utensils, Dumbbell, Sparkles, Bell
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnnouncementBanner } from "./AnnouncementBanner";

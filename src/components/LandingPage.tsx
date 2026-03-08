@@ -148,6 +148,8 @@ export const LandingPage = ({ onGetStarted, onClinicianAccess }: LandingPageProp
                 src={image} 
                 alt={`Healthcare scene ${index + 1}`}
                 className="w-full h-full object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
               />
             </div>
           ))}

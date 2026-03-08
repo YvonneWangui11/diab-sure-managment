@@ -365,6 +365,9 @@ export const ClinicianDashboardRefactored = ({ onSignOut, roleSwitcher }: Clinic
       case 'reports':
         return <ReportsExports />;
 
+      case 'care-plans':
+        return <CarePlanManager clinicianId={(userProfile as Record<string, string>)?.user_id} />;
+
       case 'education':
         return <EducationHub />;
       

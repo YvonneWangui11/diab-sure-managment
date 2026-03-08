@@ -11,11 +11,15 @@ import {
   Lightbulb,
   TrendingUp,
   Shield,
-  Brain
+  Brain,
+  FileText,
+  Upload
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import jsPDF from "jspdf";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { EducationUploadManager } from "./EducationUploadManager";
 
 const healthTips = [
   {
@@ -161,18 +165,64 @@ const localMealGuide = [
   }
 ];
 
+interface UploadedResource {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  file_path: string;
+  file_size: number | null;
+  created_at: string;
+}
+
 export const EducationHub = () => {
   const [dailyQuote, setDailyQuote] = useState("");
   const [dailyTip, setDailyTip] = useState(healthTips[0]);
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
+  const [uploadedResources, setUploadedResources] = useState<UploadedResource[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  const loadUploadedResources = useCallback(async () => {
+    const { data } = await supabase
+      .from("education_uploads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setUploadedResources(data);
+  }, []);
 
   useEffect(() => {
     const randomQuote = wellnessQuotes[Math.floor(Math.random() * wellnessQuotes.length)];
     const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
     setDailyQuote(randomQuote);
     setDailyTip(randomTip);
-  }, []);
+
+    loadUploadedResources();
+
+    // Check admin role
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+          .then(({ data }) => { if (data) setIsAdmin(true); });
+      }
+    });
+  }, [loadUploadedResources]);
+
+  const downloadUploadedPDF = async (resource: UploadedResource) => {
+    try {
+      const { data } = supabase.storage.from("education-resources").getPublicUrl(resource.file_path);
+      const link = document.createElement("a");
+      link.href = data.publicUrl;
+      link.download = `${resource.title.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({ title: "Downloading", description: resource.title });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to download" });
+    }
+  };
 
   const generatePDF = (material: typeof educationalMaterials[0]) => {
     setDownloadingId(material.id);
@@ -410,11 +460,12 @@ export const EducationHub = () => {
       </div>
 
       <Tabs defaultValue="materials" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className={`grid w-full ${isAdmin ? "grid-cols-5" : "grid-cols-4"}`}>
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="prevention">Prevention</TabsTrigger>
           <TabsTrigger value="nutrition">Local Meals</TabsTrigger>
           <TabsTrigger value="tips">Health Tips</TabsTrigger>
+          {isAdmin && <TabsTrigger value="manage"><Upload className="h-3 w-3 mr-1" />Manage</TabsTrigger>}
         </TabsList>
 
         {/* Downloadable Materials */}
@@ -442,6 +493,41 @@ export const EducationHub = () => {
               </Card>
             ))}
           </div>
+
+          {/* Uploaded Resources */}
+          {uploadedResources.length > 0 && (
+            <>
+              <h3 className="text-lg font-semibold mt-6 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Uploaded Resources
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {uploadedResources.map((resource) => (
+                  <Card key={resource.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <FileText className="h-10 w-10 text-primary" />
+                        <Badge variant="secondary">{resource.category}</Badge>
+                      </div>
+                      <CardTitle className="text-lg">{resource.title}</CardTitle>
+                      {resource.description && <CardDescription>{resource.description}</CardDescription>}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {resource.file_size ? `${(resource.file_size / (1024 * 1024)).toFixed(1)} MB` : "PDF"}
+                        </span>
+                        <Button size="sm" onClick={() => downloadUploadedPDF(resource)}>
+                          <Download className="h-4 w-4 mr-2" />
+                          Download PDF
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
         </TabsContent>
 
         {/* Prevention Guide */}
@@ -598,6 +684,12 @@ export const EducationHub = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="manage" className="space-y-6">
+            <EducationUploadManager />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

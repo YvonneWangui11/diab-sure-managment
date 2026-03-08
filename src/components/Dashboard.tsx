@@ -16,6 +16,7 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ onNavigate }: DashboardProps) => {
+  const [userId, setUserId] = useState<string>('');
   const [data, setData] = useState({
     fullName: '',
     latestGlucose: null as number | null,

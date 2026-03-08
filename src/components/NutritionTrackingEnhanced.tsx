@@ -37,6 +37,7 @@ interface NutritionTrackingEnhancedProps {
 }
 
 export const NutritionTrackingEnhanced = ({ userId }: NutritionTrackingEnhancedProps) => {
+  const { trackActivity } = useStreakTracker();
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();

@@ -43,32 +43,39 @@ const Index = () => {
       
       if (error) {
         console.error('Error loading user roles:', error);
+        // Default to patient if we can't load roles
+        setUserRoles(['patient']);
+        setActiveRole('patient');
         return;
       }
       
-      if (roleData && roleData.length > 0) {
-        const roles = roleData.map(r => r.role as UserRole);
-        setUserRoles(roles);
-        
-        // Check localStorage for saved role preference
-        const savedRole = localStorage.getItem(ROLE_STORAGE_KEY) as UserRole | null;
-        
-        // Use saved role if it exists and user still has that role
-        if (savedRole && roles.includes(savedRole)) {
-          setActiveRole(savedRole);
+      // Default to patient if no roles found
+      const roles = (roleData && roleData.length > 0) 
+        ? roleData.map(r => r.role as UserRole) 
+        : ['patient' as UserRole];
+      
+      setUserRoles(roles);
+      
+      // Check localStorage for saved role preference
+      const savedRole = localStorage.getItem(ROLE_STORAGE_KEY) as UserRole | null;
+      
+      // Use saved role if it exists and user still has that role
+      if (savedRole && roles.includes(savedRole)) {
+        setActiveRole(savedRole);
+      } else {
+        // Set default active role based on priority: admin > clinician > patient
+        if (roles.includes('admin')) {
+          setActiveRole('admin');
+        } else if (roles.includes('clinician')) {
+          setActiveRole('clinician');
         } else {
-          // Set default active role based on priority: admin > clinician > patient
-          if (roles.includes('admin')) {
-            setActiveRole('admin');
-          } else if (roles.includes('clinician')) {
-            setActiveRole('clinician');
-          } else {
-            setActiveRole('patient');
-          }
+          setActiveRole('patient');
         }
       }
     } catch (error) {
       console.error('Error loading user roles:', error);
+      setUserRoles(['patient']);
+      setActiveRole('patient');
     }
   }, []);
 

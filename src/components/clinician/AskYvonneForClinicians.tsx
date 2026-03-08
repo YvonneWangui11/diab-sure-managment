@@ -317,6 +317,13 @@ Be helpful, concise, and professional. When explaining app features, be specific
       </ScrollArea>
 
       <div className="border-t bg-card/50 px-6 py-3">
+        {messages.length > 0 && (
+          <div className="flex justify-end max-w-4xl mx-auto mb-1">
+            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-destructive h-7" onClick={() => setMessages([])}>
+              <Trash2 className="h-3 w-3 mr-1" /> Clear chat
+            </Button>
+          </div>
+        )}
         <div className="flex gap-2 max-w-4xl mx-auto">
           <Input
             placeholder="Ask about app features, workflows, or patient education..."

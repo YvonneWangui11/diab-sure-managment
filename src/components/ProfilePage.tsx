@@ -258,12 +258,18 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
           </Card>
 
           <ConsentManager />
+          <NotificationPreferences />
           <PatientDataExport />
           <DataDeletionRequest />
         </>
       )}
 
-      {userRole === 'clinician' && <ConsentManager />}
+      {userRole === 'clinician' && (
+        <>
+          <ConsentManager />
+          <NotificationPreferences />
+        </>
+      )}
     </div>
   );
 };

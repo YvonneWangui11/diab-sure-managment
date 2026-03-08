@@ -9,6 +9,8 @@ import { ExerciseTrackingEnhanced } from "@/components/ExerciseTrackingEnhanced"
 import { AppointmentViewing } from "@/components/AppointmentViewing";
 import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { EducationHub } from "@/components/EducationHub";
+import { PatientMedicationTracking } from "@/components/PatientMedicationTracking";
+import { MessagingCenter } from "@/components/MessagingCenter";
 import { ProfilePage } from "@/components/ProfilePage";
 import { LandingPage } from "@/components/LandingPage";
 import { AuthPage } from "@/components/AuthPage";

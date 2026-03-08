@@ -111,7 +111,7 @@ export const ClinicianDashboard = ({ onSignOut, roleSwitcher }: ClinicianDashboa
           .from('doctor_details')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
         setDoctorDetails(doctorData);
         

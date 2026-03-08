@@ -13,6 +13,7 @@ import { format, parseISO, startOfDay, endOfDay } from "date-fns";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { ClinicianSidebar } from "./ClinicianSidebar";
 import { TriageFeed } from "./TriageFeed";
+import { CarePlanManager } from "../CarePlanManager";
 import { ClinicianYvonneButton } from "./ClinicianYvonneButton";
 import { PatientList } from "@/components/PatientList";
 import { PatientProgressView } from "@/components/PatientProgressView";

@@ -165,18 +165,64 @@ const localMealGuide = [
   }
 ];
 
+interface UploadedResource {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  file_path: string;
+  file_size: number | null;
+  created_at: string;
+}
+
 export const EducationHub = () => {
   const [dailyQuote, setDailyQuote] = useState("");
   const [dailyTip, setDailyTip] = useState(healthTips[0]);
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
+  const [uploadedResources, setUploadedResources] = useState<UploadedResource[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  const loadUploadedResources = useCallback(async () => {
+    const { data } = await supabase
+      .from("education_uploads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setUploadedResources(data);
+  }, []);
 
   useEffect(() => {
     const randomQuote = wellnessQuotes[Math.floor(Math.random() * wellnessQuotes.length)];
     const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
     setDailyQuote(randomQuote);
     setDailyTip(randomTip);
-  }, []);
+
+    loadUploadedResources();
+
+    // Check admin role
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+          .then(({ data }) => { if (data) setIsAdmin(true); });
+      }
+    });
+  }, [loadUploadedResources]);
+
+  const downloadUploadedPDF = async (resource: UploadedResource) => {
+    try {
+      const { data } = supabase.storage.from("education-resources").getPublicUrl(resource.file_path);
+      const link = document.createElement("a");
+      link.href = data.publicUrl;
+      link.download = `${resource.title.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({ title: "Downloading", description: resource.title });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to download" });
+    }
+  };
 
   const generatePDF = (material: typeof educationalMaterials[0]) => {
     setDownloadingId(material.id);

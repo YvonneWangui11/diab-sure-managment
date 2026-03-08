@@ -215,17 +215,17 @@ export const NutritionTrackingEnhanced = ({ userId }: NutritionTrackingEnhancedP
                 </div>
                 <div>
                   <Label htmlFor="meal-type">Meal Type</Label>
-                  <select
-                    id="meal-type"
-                    value={newMeal.meal_type}
-                    onChange={(e) => setNewMeal({ ...newMeal, meal_type: e.target.value })}
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                  >
-                    <option value="breakfast">Breakfast</option>
-                    <option value="lunch">Lunch</option>
-                    <option value="dinner">Dinner</option>
-                    <option value="snack">Snack</option>
-                  </select>
+                  <Select value={newMeal.meal_type} onValueChange={(val) => setNewMeal({ ...newMeal, meal_type: val })}>
+                    <SelectTrigger id="meal-type">
+                      <SelectValue placeholder="Select meal type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="breakfast">Breakfast</SelectItem>
+                      <SelectItem value="lunch">Lunch</SelectItem>
+                      <SelectItem value="dinner">Dinner</SelectItem>
+                      <SelectItem value="snack">Snack</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="meal-note">Notes (optional)</Label>

@@ -12,8 +12,8 @@ export const FloatingYvonneButton = () => {
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 h-20 w-20 rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 z-50 p-0 overflow-hidden border-4 border-white/20 bg-gradient-to-br from-primary to-primary/80"
-        aria-label="Ask Dr. Yvonne"
+        className="fixed bottom-24 md:bottom-8 right-6 md:right-8 h-16 w-16 md:h-20 md:w-20 rounded-full shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 z-50 p-0 overflow-hidden border-4 border-white/20 bg-gradient-to-br from-primary to-primary/80"
+        aria-label="Ask Dr. Yvonne - AI Health Assistant"
       >
         <img 
           src={yvonneAvatar} 

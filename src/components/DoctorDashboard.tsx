@@ -61,7 +61,7 @@ export const DoctorDashboard = () => {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profile) {
         setUserProfile(profile);

@@ -139,7 +139,7 @@ export const ClinicianDashboardRefactored = ({ onSignOut, roleSwitcher }: Clinic
           .from('doctor_details')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
         setDoctorDetails(doctorData);
         

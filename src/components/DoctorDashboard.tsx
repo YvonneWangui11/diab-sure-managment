@@ -71,7 +71,7 @@ export const DoctorDashboard = () => {
           .from('doctor_details')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
         
         setDoctorDetails(doctorData);
       }

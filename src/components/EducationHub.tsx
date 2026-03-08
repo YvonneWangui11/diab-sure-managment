@@ -460,11 +460,12 @@ export const EducationHub = () => {
       </div>
 
       <Tabs defaultValue="materials" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className={`grid w-full ${isAdmin ? "grid-cols-5" : "grid-cols-4"}`}>
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="prevention">Prevention</TabsTrigger>
           <TabsTrigger value="nutrition">Local Meals</TabsTrigger>
           <TabsTrigger value="tips">Health Tips</TabsTrigger>
+          {isAdmin && <TabsTrigger value="manage"><Upload className="h-3 w-3 mr-1" />Manage</TabsTrigger>}
         </TabsList>
 
         {/* Downloadable Materials */}

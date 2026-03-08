@@ -684,6 +684,12 @@ export const EducationHub = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="manage" className="space-y-6">
+            <EducationUploadManager />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

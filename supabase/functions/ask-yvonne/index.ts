@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
@@ -20,20 +20,27 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { 
             role: "system", 
-            content: `You are Yvonne, a compassionate and knowledgeable Type 2 Diabetes health assistant. 
-            You provide guidance on:
-            - Blood glucose management and monitoring
-            - Meal planning and nutrition advice
-            - Exercise recommendations
-            - Medication reminders and information
-            - Lifestyle modifications for diabetes management
-            
-            Always be supportive, provide evidence-based advice, and remind users to consult their healthcare provider for medical decisions.
-            Keep responses clear, concise, and actionable.` 
+            content: `You are Dr. Yvonne, a compassionate and knowledgeable Type 2 Diabetes health assistant for DiabeSure app users at JKUAT Hospital, Kenya.
+
+You provide guidance on:
+- Blood glucose management and monitoring
+- Meal planning with Kenyan foods and nutrition advice
+- Exercise recommendations suitable for diabetes management
+- Medication adherence tips and general information
+- Lifestyle modifications for diabetes management
+- Navigating the DiabeSure app features
+
+Important rules:
+- Always be supportive, warm, and encouraging
+- Provide evidence-based, DSMES-aligned advice
+- Keep responses clear, concise, and actionable
+- Always remind users to consult their healthcare provider for medical decisions
+- You are NON-DIAGNOSTIC - never diagnose conditions or prescribe medications
+- When discussing food, prefer Kenyan dietary context (ugali, sukuma wiki, chapati, etc.)` 
           },
           ...messages,
         ],
@@ -56,7 +63,7 @@ serve(async (req) => {
       }
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: "AI service error" }), {
+      return new Response(JSON.stringify({ error: "AI service temporarily unavailable. Please try again." }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

@@ -1,17 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { Navigation } from "@/components/Navigation";
-import { Dashboard } from "@/components/Dashboard";
-import { ClinicianDashboardRefactored } from "@/components/clinician/ClinicianDashboardRefactored";
-import { AdminDashboard } from "@/components/AdminDashboard";
-import { GlucoseTracking } from "@/components/GlucoseTracking";
-import { NutritionTrackingEnhanced } from "@/components/NutritionTrackingEnhanced";
-import { ExerciseTrackingEnhanced } from "@/components/ExerciseTrackingEnhanced";
-import { AppointmentViewing } from "@/components/AppointmentViewing";
-import { ProgressDashboard } from "@/components/ProgressDashboard";
-import { EducationHub } from "@/components/EducationHub";
-import { PatientMedicationTracking } from "@/components/PatientMedicationTracking";
-import { MessagingCenter } from "@/components/MessagingCenter";
-import { ProfilePage } from "@/components/ProfilePage";
 import { LandingPage } from "@/components/LandingPage";
 import { AuthPage } from "@/components/AuthPage";
 import { FloatingYvonneButton } from "@/components/FloatingYvonneButton";
@@ -20,10 +8,30 @@ import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Lazy load heavy components
+const Dashboard = lazy(() => import("@/components/Dashboard").then(m => ({ default: m.Dashboard })));
+const ClinicianDashboardRefactored = lazy(() => import("@/components/clinician/ClinicianDashboardRefactored").then(m => ({ default: m.ClinicianDashboardRefactored })));
+const AdminDashboard = lazy(() => import("@/components/AdminDashboard").then(m => ({ default: m.AdminDashboard })));
+const GlucoseTracking = lazy(() => import("@/components/GlucoseTracking").then(m => ({ default: m.GlucoseTracking })));
+const NutritionTrackingEnhanced = lazy(() => import("@/components/NutritionTrackingEnhanced").then(m => ({ default: m.NutritionTrackingEnhanced })));
+const ExerciseTrackingEnhanced = lazy(() => import("@/components/ExerciseTrackingEnhanced").then(m => ({ default: m.ExerciseTrackingEnhanced })));
+const AppointmentViewing = lazy(() => import("@/components/AppointmentViewing").then(m => ({ default: m.AppointmentViewing })));
+const ProgressDashboard = lazy(() => import("@/components/ProgressDashboard").then(m => ({ default: m.ProgressDashboard })));
+const EducationHub = lazy(() => import("@/components/EducationHub").then(m => ({ default: m.EducationHub })));
+const PatientMedicationTracking = lazy(() => import("@/components/PatientMedicationTracking").then(m => ({ default: m.PatientMedicationTracking })));
+const MessagingCenter = lazy(() => import("@/components/MessagingCenter").then(m => ({ default: m.MessagingCenter })));
+const ProfilePage = lazy(() => import("@/components/ProfilePage").then(m => ({ default: m.ProfilePage })));
+
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;
 
 const ROLE_STORAGE_KEY = "diabesure_active_role";
+
+const SuspenseFallback = () => (
+  <div className="flex justify-center items-center h-64">
+    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
+  </div>
+);
 
 const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,34 +53,25 @@ const Index = () => {
       
       if (error) {
         console.error('Error loading user roles:', error);
-        // Default to patient if we can't load roles
         setUserRoles(['patient']);
         setActiveRole('patient');
         return;
       }
       
-      // Default to patient if no roles found
       const roles = (roleData && roleData.length > 0) 
         ? roleData.map(r => r.role as UserRole) 
         : ['patient' as UserRole];
       
       setUserRoles(roles);
       
-      // Check localStorage for saved role preference
       const savedRole = localStorage.getItem(ROLE_STORAGE_KEY) as UserRole | null;
       
-      // Use saved role if it exists and user still has that role
       if (savedRole && roles.includes(savedRole)) {
         setActiveRole(savedRole);
       } else {
-        // Set default active role based on priority: admin > clinician > patient
-        if (roles.includes('admin')) {
-          setActiveRole('admin');
-        } else if (roles.includes('clinician')) {
-          setActiveRole('clinician');
-        } else {
-          setActiveRole('patient');
-        }
+        if (roles.includes('admin')) setActiveRole('admin');
+        else if (roles.includes('clinician')) setActiveRole('clinician');
+        else setActiveRole('patient');
       }
     } catch (error) {
       console.error('Error loading user roles:', error);
@@ -108,7 +107,6 @@ const Index = () => {
 
     initializeAuth();
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
@@ -125,8 +123,6 @@ const Index = () => {
           setUserId("");
           setCurrentPage("dashboard");
           setShowAuth(false);
-        } else if (event === 'TOKEN_REFRESHED') {
-          console.log('Token refreshed');
         }
       }
     );
@@ -154,8 +150,8 @@ const Index = () => {
 
   const handleRoleSwitch = (newRole: UserRole) => {
     setActiveRole(newRole);
-    localStorage.setItem(ROLE_STORAGE_KEY, newRole); // Persist to localStorage
-    setCurrentPage("dashboard"); // Reset to dashboard when switching roles
+    localStorage.setItem(ROLE_STORAGE_KEY, newRole);
+    setCurrentPage("dashboard");
     toast({
       title: "Role switched",
       description: `You are now viewing the ${newRole} dashboard.`,
@@ -173,7 +169,7 @@ const Index = () => {
       setUserId("");
       setShowAuth(false);
       setCurrentPage("dashboard");
-      localStorage.removeItem(ROLE_STORAGE_KEY); // Clear saved role on sign out
+      localStorage.removeItem(ROLE_STORAGE_KEY);
       
       toast({
         title: "Signed out",
@@ -189,7 +185,6 @@ const Index = () => {
     }
   };
 
-  // Render patient-specific pages
   const renderPatientPage = () => {
     switch (currentPage) {
       case "dashboard":
@@ -217,7 +212,6 @@ const Index = () => {
     }
   };
 
-  // Show loading state during initialization
   if (isInitializing) {
     return <PageLoader text="Loading DiabeSure..." />;
   }
@@ -230,25 +224,25 @@ const Index = () => {
     return <AuthPage onAuthSuccess={handleAuthSuccess} defaultRole={authMode} />;
   }
 
-  // Route based on active role
+  const roleSwitcherElement = userRoles.length > 1 && activeRole ? (
+    <RoleSwitcher 
+      currentRole={activeRole} 
+      availableRoles={userRoles} 
+      onRoleChange={handleRoleSwitch} 
+    />
+  ) : undefined;
+
   if (activeRole === 'clinician') {
     return (
-      <ClinicianDashboardRefactored 
-        onSignOut={handleSignOut}
-        roleSwitcher={
-          userRoles.length > 1 ? (
-            <RoleSwitcher 
-              currentRole={activeRole} 
-              availableRoles={userRoles} 
-              onRoleChange={handleRoleSwitch} 
-            />
-          ) : undefined
-        }
-      />
+      <Suspense fallback={<PageLoader text="Loading clinician dashboard..." />}>
+        <ClinicianDashboardRefactored 
+          onSignOut={handleSignOut}
+          roleSwitcher={roleSwitcherElement}
+        />
+      </Suspense>
     );
   }
 
-  // Route admins to their dedicated dashboard
   if (activeRole === 'admin') {
     return (
       <div className="min-h-screen bg-background">
@@ -256,43 +250,30 @@ const Index = () => {
           currentPage={currentPage} 
           onPageChange={setCurrentPage}
           onSignOut={handleSignOut}
-          roleSwitcher={
-            userRoles.length > 1 ? (
-              <RoleSwitcher 
-                currentRole={activeRole} 
-                availableRoles={userRoles} 
-                onRoleChange={handleRoleSwitch} 
-              />
-            ) : undefined
-          }
+          roleSwitcher={roleSwitcherElement}
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <AdminDashboard />
+          <Suspense fallback={<SuspenseFallback />}>
+            <AdminDashboard />
+          </Suspense>
         </main>
         <FloatingYvonneButton />
       </div>
     );
   }
 
-  // Default: Patient dashboard with patient navigation
   return (
     <div className="min-h-screen bg-background">
       <Navigation 
         currentPage={currentPage} 
         onPageChange={setCurrentPage}
         onSignOut={handleSignOut}
-        roleSwitcher={
-          userRoles.length > 1 && activeRole ? (
-            <RoleSwitcher 
-              currentRole={activeRole} 
-              availableRoles={userRoles} 
-              onRoleChange={handleRoleSwitch} 
-            />
-          ) : undefined
-        }
+        roleSwitcher={roleSwitcherElement}
       />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {renderPatientPage()}
+        <Suspense fallback={<SuspenseFallback />}>
+          {renderPatientPage()}
+        </Suspense>
       </main>
       <FloatingYvonneButton />
     </div>

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PatientDataExport } from "./PatientDataExport";
 import { DataDeletionRequest } from "./DataDeletionRequest";
 import { ConsentManager } from "./ConsentManager";
+import { NotificationPreferences } from "./NotificationPreferences";
 
 interface ProfilePageProps {
   onSignOut: () => void;
@@ -257,12 +258,18 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
           </Card>
 
           <ConsentManager />
+          <NotificationPreferences />
           <PatientDataExport />
           <DataDeletionRequest />
         </>
       )}
 
-      {userRole === 'clinician' && <ConsentManager />}
+      {userRole === 'clinician' && (
+        <>
+          <ConsentManager />
+          <NotificationPreferences />
+        </>
+      )}
     </div>
   );
 };

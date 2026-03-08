@@ -36,6 +36,10 @@ const RiskStratification = lazy(() => import("@/components/RiskStratification").
 const NaturalLanguageLogger = lazy(() => import("@/components/NaturalLanguageLogger").then(m => ({ default: m.NaturalLanguageLogger })));
 const PredictiveGlucoseAlerts = lazy(() => import("@/components/PredictiveGlucoseAlerts").then(m => ({ default: m.PredictiveGlucoseAlerts })));
 const EngagementDashboard = lazy(() => import("@/components/EngagementDashboard").then(m => ({ default: m.EngagementDashboard })));
+const CarePlanView = lazy(() => import("@/components/CarePlanView").then(m => ({ default: m.CarePlanView })));
+const HealthTimeline = lazy(() => import("@/components/HealthTimeline").then(m => ({ default: m.HealthTimeline })));
+const NotificationPreferences = lazy(() => import("@/components/NotificationPreferences").then(m => ({ default: m.NotificationPreferences })));
+const PatientOnboarding = lazy(() => import("@/components/PatientOnboarding").then(m => ({ default: m.PatientOnboarding })));
 
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;
@@ -224,6 +228,9 @@ const Index = () => {
       case "quick-log": return userId ? <NaturalLanguageLogger userId={userId} /> : null;
       case "predictive-alerts": return userId ? <PredictiveGlucoseAlerts userId={userId} /> : null;
       case "engagement": return userId ? <EngagementDashboard userId={userId} /> : null;
+      case "care-plan": return userId ? <CarePlanView userId={userId} /> : null;
+      case "timeline": return userId ? <HealthTimeline userId={userId} /> : null;
+      case "notifications": return <NotificationPreferences />;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

@@ -20,6 +20,8 @@ const menuItems = [
   { id: "glucose-trends", label: "Insights", icon: BarChart3 },
   { id: "weekly-report", label: "Report", icon: FileText },
   { id: "engagement", label: "Progress", icon: Trophy },
+  { id: "care-plan", label: "Care Plan", icon: Heart },
+  { id: "timeline", label: "Timeline", icon: Activity },
   { id: "appointments", label: "Appts", icon: Calendar },
   { id: "messages", label: "Messages", icon: MessageSquare },
   { id: "profile", label: "Profile", icon: User },

@@ -164,6 +164,98 @@ export type Database = {
         }
         Relationships: []
       }
+      care_plan_goals: {
+        Row: {
+          care_plan_id: string
+          completed_at: string | null
+          created_at: string
+          current_value: string | null
+          description: string | null
+          due_date: string | null
+          goal_type: string
+          id: string
+          status: string
+          target_value: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          care_plan_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_value?: string | null
+          description?: string | null
+          due_date?: string | null
+          goal_type?: string
+          id?: string
+          status?: string
+          target_value?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          care_plan_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_value?: string | null
+          description?: string | null
+          due_date?: string | null
+          goal_type?: string
+          id?: string
+          status?: string
+          target_value?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_plan_goals_care_plan_id_fkey"
+            columns: ["care_plan_id"]
+            isOneToOne: false
+            referencedRelation: "care_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_plans: {
+        Row: {
+          clinician_id: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          patient_id: string
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          clinician_id: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          patient_id: string
+          start_date?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          clinician_id?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          patient_id?: string
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       data_retention_flags: {
         Row: {
           action_taken: string | null

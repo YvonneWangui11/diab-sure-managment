@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import yvonneAvatar from '@/assets/yvonne-avatar.png';
 import { Send, Bot, User, AlertCircle, HelpCircle, FileText, Pill, Calendar, TrendingUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -264,7 +265,13 @@ Be helpful, concise, and professional. When explaining app features, be specific
                     : "bg-card border border-border/50 rounded-bl-sm"
                 }`}
               >
-                <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                {message.role === "assistant" ? (
+                  <div className="leading-relaxed prose prose-sm dark:prose-invert max-w-none [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2 [&>h1]:text-base [&>h2]:text-sm [&>h3]:text-sm">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                )}
               </div>
               {message.role === "user" && (
                 <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
@@ -301,7 +308,7 @@ Be helpful, concise, and professional. When explaining app features, be specific
             placeholder="Ask about app features, workflows, or patient education..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             disabled={isLoading}
             className="flex-1 h-10 px-4 text-sm rounded-full border focus:border-primary transition-colors"
           />

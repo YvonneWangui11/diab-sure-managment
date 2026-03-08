@@ -44,6 +44,13 @@ export const AskYvonneForClinicians = ({ context }: AskYvonneForCliniciansProps)
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Persist messages
+  useEffect(() => {
+    try {
+      localStorage.setItem(CLINICIAN_STORAGE_KEY, JSON.stringify(messages));
+    } catch { /* quota exceeded */ }
+  }, [messages]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

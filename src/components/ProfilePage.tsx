@@ -69,7 +69,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
         setUserRole(role);
 
         if (role === 'clinician') {
-          const { data: doctorDetails } = await supabase.from('doctor_details').select('*').eq('user_id', user.id).single();
+          const { data: doctorDetails } = await supabase.from('doctor_details').select('*').eq('user_id', user.id).maybeSingle();
           if (doctorDetails) {
             setProfileData(prev => ({
               ...prev,

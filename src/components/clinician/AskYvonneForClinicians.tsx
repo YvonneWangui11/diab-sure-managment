@@ -5,8 +5,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import yvonneAvatar from '@/assets/yvonne-avatar.png';
-import { Send, Bot, User, AlertCircle, HelpCircle, FileText, Pill, Calendar, TrendingUp } from "lucide-react";
+import { Send, Bot, User, AlertCircle, HelpCircle, FileText, Pill, Calendar, TrendingUp, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+
+const CLINICIAN_STORAGE_KEY = "yvonne_chat_clinician";
 
 interface Message {
   role: "user" | "assistant";

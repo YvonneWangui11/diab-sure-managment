@@ -265,7 +265,13 @@ Be helpful, concise, and professional. When explaining app features, be specific
                     : "bg-card border border-border/50 rounded-bl-sm"
                 }`}
               >
-                <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                {message.role === "assistant" ? (
+                  <div className="leading-relaxed prose prose-sm dark:prose-invert max-w-none [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2 [&>h1]:text-base [&>h2]:text-sm [&>h3]:text-sm">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                )}
               </div>
               {message.role === "user" && (
                 <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">

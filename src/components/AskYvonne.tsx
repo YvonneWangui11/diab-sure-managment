@@ -53,6 +53,13 @@ export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => 
   const audioChunksRef = useRef<Blob[]>([]);
   const { toast } = useToast();
 
+  // Persist messages to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    } catch { /* quota exceeded */ }
+  }, [messages, storageKey]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;

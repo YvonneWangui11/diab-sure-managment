@@ -164,14 +164,210 @@ const localMealGuide = [
 export const EducationHub = () => {
   const [dailyQuote, setDailyQuote] = useState("");
   const [dailyTip, setDailyTip] = useState(healthTips[0]);
+  const [downloadingId, setDownloadingId] = useState<number | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Set random daily quote and tip
     const randomQuote = wellnessQuotes[Math.floor(Math.random() * wellnessQuotes.length)];
     const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
     setDailyQuote(randomQuote);
     setDailyTip(randomTip);
   }, []);
+
+  const generatePDF = (material: typeof educationalMaterials[0]) => {
+    setDownloadingId(material.id);
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      // Title page
+      doc.setFontSize(24);
+      doc.text(material.title, pageWidth / 2, 60, { align: "center", maxWidth: pageWidth - 40 });
+
+      doc.setFontSize(12);
+      doc.setTextColor(100);
+      doc.text(material.description, pageWidth / 2, 90, { align: "center", maxWidth: pageWidth - 40 });
+
+      doc.setFontSize(10);
+      doc.text(`Category: ${material.category}`, pageWidth / 2, 110, { align: "center" });
+      doc.text(`DiabSure Education Hub`, pageWidth / 2, 120, { align: "center" });
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 130, { align: "center" });
+
+      // Content pages based on category
+      const contentMap: Record<string, string[]> = {
+        Basics: [
+          "What is Diabetes?",
+          "Diabetes is a chronic condition that affects how your body turns food into energy. There are two main types:",
+          "Type 1 Diabetes: The body doesn't produce insulin. Usually diagnosed in children and young adults.",
+          "Type 2 Diabetes: The body doesn't use insulin well. Most common form, often linked to lifestyle factors.",
+          "",
+          "Common Symptoms:",
+          "• Increased thirst and frequent urination",
+          "• Unexplained weight loss",
+          "• Fatigue and blurred vision",
+          "• Slow-healing sores",
+          "",
+          "Management Strategies:",
+          "• Monitor blood glucose regularly",
+          "• Take medications as prescribed",
+          "• Follow a balanced diet",
+          "• Exercise regularly (150 min/week)",
+          "• Attend regular check-ups",
+        ],
+        Nutrition: [
+          "Diabetes-Friendly Kenyan Recipes",
+          "",
+          "Breakfast: Brown Ugali with Vegetables",
+          "Ingredients: Brown maize flour, spinach, tomatoes, onions",
+          "Preparation: Cook brown ugali as usual. Sauté vegetables with minimal oil.",
+          "Benefits: High fiber, low glycemic index, rich in vitamins.",
+          "",
+          "Lunch: Grilled Tilapia with Sukuma Wiki",
+          "Ingredients: Fresh tilapia, sukuma wiki, lemon, garlic",
+          "Preparation: Season and grill fish. Lightly sauté greens.",
+          "Benefits: Lean protein, iron-rich greens, heart-healthy.",
+          "",
+          "Dinner: Githeri (Beans & Maize Mix)",
+          "Ingredients: Boiled beans, maize, vegetables, herbs",
+          "Benefits: Plant protein, slow-release carbs, high fiber.",
+          "",
+          "Snack: Fresh Fruit & Nuts",
+          "Options: Mangoes, passion fruit, groundnuts in moderation.",
+        ],
+        Exercise: [
+          "Exercise Guide for Diabetes Management",
+          "",
+          "Recommended Activities:",
+          "• Walking: 30 minutes daily, brisk pace",
+          "• Swimming: Low-impact, full-body workout",
+          "• Cycling: Great for cardiovascular health",
+          "• Yoga: Reduces stress, improves flexibility",
+          "",
+          "Safety Guidelines:",
+          "• Check blood sugar before and after exercise",
+          "• Carry fast-acting glucose (juice, sweets)",
+          "• Stay hydrated throughout",
+          "• Wear proper footwear to protect feet",
+          "• Start slowly and increase intensity gradually",
+          "",
+          "Weekly Target: 150 minutes of moderate activity",
+          "Strength training: 2-3 sessions per week",
+        ],
+        Monitoring: [
+          "Blood Sugar Monitoring Best Practices",
+          "",
+          "When to Test:",
+          "• Before meals (fasting)",
+          "• 2 hours after meals (post-prandial)",
+          "• Before bedtime",
+          "• Before and after exercise",
+          "",
+          "Target Ranges:",
+          "• Fasting: 70-130 mg/dL",
+          "• Post-meal (2hrs): Below 180 mg/dL",
+          "• HbA1c: Below 7%",
+          "",
+          "Tips for Accurate Readings:",
+          "• Wash hands before testing",
+          "• Use the side of your fingertip",
+          "• Rotate testing sites",
+          "• Keep a log of all readings",
+          "• Share logs with your healthcare team",
+        ],
+        Prevention: [
+          "Preventing Diabetes Complications",
+          "",
+          "Heart Health:",
+          "• Maintain healthy blood pressure (<130/80)",
+          "• Keep cholesterol in check",
+          "• Avoid smoking and limit alcohol",
+          "",
+          "Eye Care:",
+          "• Annual dilated eye exams",
+          "• Report vision changes immediately",
+          "",
+          "Kidney Protection:",
+          "• Regular kidney function tests",
+          "• Control blood pressure",
+          "• Stay hydrated",
+          "",
+          "Foot Care:",
+          "• Inspect feet daily for cuts or sores",
+          "• Wear comfortable, well-fitting shoes",
+          "• Never walk barefoot",
+          "• See a podiatrist regularly",
+        ],
+        Medication: [
+          "Medication Management Handbook",
+          "",
+          "Common Diabetes Medications:",
+          "• Metformin: First-line for Type 2, reduces glucose production",
+          "• Sulfonylureas: Stimulate insulin release",
+          "• Insulin: Required for Type 1, sometimes Type 2",
+          "",
+          "Important Guidelines:",
+          "• Take medications at the same time daily",
+          "• Never skip doses without consulting your doctor",
+          "• Store insulin properly (refrigerate, avoid freezing)",
+          "• Report side effects to your healthcare team",
+          "",
+          "Medication Safety:",
+          "• Keep an updated medication list",
+          "• Inform all doctors about your medications",
+          "• Check for drug interactions",
+          "• Refill prescriptions before running out",
+        ],
+      };
+
+      const content = contentMap[material.category] || contentMap["Basics"];
+      doc.addPage();
+      doc.setTextColor(0);
+      let y = 20;
+
+      doc.setFontSize(16);
+      doc.text(content[0], 14, y);
+      y += 12;
+      doc.setFontSize(11);
+
+      for (let i = 1; i < content.length; i++) {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        const line = content[i];
+        if (line === "") {
+          y += 6;
+        } else {
+          doc.text(line, 14, y, { maxWidth: pageWidth - 28 });
+          y += 7;
+        }
+      }
+
+      // Footer on all pages
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text(
+          `DiabSure Education Hub — Page ${i} of ${pageCount}`,
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 10,
+          { align: "center" }
+        );
+      }
+
+      const filename = material.title.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+      doc.save(`${filename}.pdf`);
+
+      toast({ title: "Downloaded", description: `${material.title} saved as PDF` });
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to generate PDF" });
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   return (
     <div className="space-y-6">

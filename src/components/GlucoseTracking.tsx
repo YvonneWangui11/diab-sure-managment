@@ -75,6 +75,7 @@ export const GlucoseTracking = ({ userId }: GlucoseTrackingProps) => {
         .insert({ patient_id: userId, glucose_value: Number(glucoseValue), test_time: testTime, notes: notes || null });
       if (error) throw error;
       toast({ title: "Success", description: "Glucose reading saved successfully" });
+      trackActivity('glucose_logging');
       setGlucoseValue("");
       setNotes("");
       setTestTime("fasting");

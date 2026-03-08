@@ -112,6 +112,7 @@ export const ExerciseTrackingEnhanced = ({ userId }: ExerciseTrackingEnhancedPro
         title: "Success",
         description: "Exercise logged successfully",
       });
+      trackActivity('exercise');
 
       setNewExercise({ exercise_type: "", duration: "", intensity: "moderate", note: "" });
       loadExercises();

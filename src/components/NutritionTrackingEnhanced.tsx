@@ -105,6 +105,7 @@ export const NutritionTrackingEnhanced = ({ userId }: NutritionTrackingEnhancedP
         title: "Success",
         description: "Meal logged successfully",
       });
+      trackActivity('meal_logging');
 
       setNewMeal({ description: "", meal_type: "breakfast", note: "" });
       loadMealLogs();

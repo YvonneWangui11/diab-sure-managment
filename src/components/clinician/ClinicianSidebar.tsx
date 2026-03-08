@@ -51,6 +51,7 @@ const mainNavItems = [
 ];
 
 const secondaryNavItems = [
+  { id: "care-plans", label: "Care Plans", icon: FileText },
   { id: "reports", label: "Reports", icon: FileText },
   { id: "education", label: "Education", icon: BookOpen },
   { id: "alerts", label: "Alerts Manager", icon: Bell },

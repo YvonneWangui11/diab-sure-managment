@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useStreakTracker } from "@/hooks/useStreakTracker";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,7 @@ interface ExerciseTrackingEnhancedProps {
 }
 
 export const ExerciseTrackingEnhanced = ({ userId }: ExerciseTrackingEnhancedProps) => {
+  const { trackActivity } = useStreakTracker();
   const [exercises, setExercises] = useState<ExerciseLog[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -110,6 +112,7 @@ export const ExerciseTrackingEnhanced = ({ userId }: ExerciseTrackingEnhancedPro
         title: "Success",
         description: "Exercise logged successfully",
       });
+      trackActivity('exercise');
 
       setNewExercise({ exercise_type: "", duration: "", intensity: "moderate", note: "" });
       loadExercises();

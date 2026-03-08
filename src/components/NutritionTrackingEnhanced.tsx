@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useStreakTracker } from "@/hooks/useStreakTracker";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +37,7 @@ interface NutritionTrackingEnhancedProps {
 }
 
 export const NutritionTrackingEnhanced = ({ userId }: NutritionTrackingEnhancedProps) => {
+  const { trackActivity } = useStreakTracker();
   const [mealLogs, setMealLogs] = useState<MealLog[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -103,6 +105,7 @@ export const NutritionTrackingEnhanced = ({ userId }: NutritionTrackingEnhancedP
         title: "Success",
         description: "Meal logged successfully",
       });
+      trackActivity('meal_logging');
 
       setNewMeal({ description: "", meal_type: "breakfast", note: "" });
       loadMealLogs();

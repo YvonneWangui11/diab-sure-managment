@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.parse-health-log]
 verify_jwt = false
+
+[functions.send-push-notification]
+verify_jwt = false
+
+[functions.send-sms-alert]
+verify_jwt = false

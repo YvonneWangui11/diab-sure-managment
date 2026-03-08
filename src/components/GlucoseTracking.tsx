@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useStreakTracker } from "@/hooks/useStreakTracker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ interface GlucoseTrackingProps {
 }
 
 export const GlucoseTracking = ({ userId }: GlucoseTrackingProps) => {
+  const { trackActivity } = useStreakTracker();
   const [glucoseValue, setGlucoseValue] = useState("");
   const [testTime, setTestTime] = useState("fasting");
   const [notes, setNotes] = useState("");
@@ -73,6 +75,7 @@ export const GlucoseTracking = ({ userId }: GlucoseTrackingProps) => {
         .insert({ patient_id: userId, glucose_value: Number(glucoseValue), test_time: testTime, notes: notes || null });
       if (error) throw error;
       toast({ title: "Success", description: "Glucose reading saved successfully" });
+      trackActivity('glucose_logging');
       setGlucoseValue("");
       setNotes("");
       setTestTime("fasting");

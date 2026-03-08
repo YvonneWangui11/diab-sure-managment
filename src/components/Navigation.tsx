@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Heart, Activity, Calendar, BookOpen, User, LogOut, TrendingUp, Apple, Dumbbell, Droplet, Pill, MessageSquare, BarChart3, Shield, FileText, Utensils } from "lucide-react";
+import { Menu, X, Heart, Activity, Calendar, BookOpen, User, LogOut, TrendingUp, Apple, Dumbbell, Droplet, Pill, MessageSquare, BarChart3, Shield, FileText, Utensils, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ const menuItems = [
   { id: "exercise", label: "Exercise", icon: Dumbbell },
   { id: "glucose-trends", label: "Insights", icon: BarChart3 },
   { id: "weekly-report", label: "Report", icon: FileText },
+  { id: "engagement", label: "Progress", icon: Trophy },
   { id: "appointments", label: "Appts", icon: Calendar },
   { id: "messages", label: "Messages", icon: MessageSquare },
   { id: "profile", label: "Profile", icon: User },

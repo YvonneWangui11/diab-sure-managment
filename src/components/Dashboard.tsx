@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Heart, Pill, Apple, Activity, Calendar, TrendingUp,
-  MessageSquare, BookOpen, BarChart3, FileText, Shield, Utensils, Dumbbell, Sparkles, Bell
+  MessageSquare, BookOpen, BarChart3, FileText, Shield, Utensils, Dumbbell, Sparkles, Bell, Trophy
 } from "lucide-react";
+import { EngagementWidget } from "./EngagementWidget";
 import { supabase } from "@/integrations/supabase/client";
 import { AnnouncementBanner } from "./AnnouncementBanner";
 
@@ -15,6 +16,7 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ onNavigate }: DashboardProps) => {
+  const [userId, setUserId] = useState<string>('');
   const [data, setData] = useState({
     fullName: '',
     latestGlucose: null as number | null,
@@ -34,6 +36,7 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      setUserId(user.id);
 
       const today = new Date();
       const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
@@ -129,6 +132,9 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
   return (
     <div className="space-y-6">
       <AnnouncementBanner userRole={userRole} />
+
+      {/* Engagement Widget */}
+      {userId && <EngagementWidget userId={userId} compact />}
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -268,6 +274,9 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
               </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('risk-assessment')}>
                 <Shield className="h-4 w-4 mr-2" /> Risk Assessment
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('engagement')}>
+                <Trophy className="h-4 w-4 mr-2" /> My Progress
               </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('messages')}>
                 <MessageSquare className="h-4 w-4 mr-2" /> Messages {unread > 0 && <Badge variant="destructive" className="ml-auto text-xs">{unread}</Badge>}

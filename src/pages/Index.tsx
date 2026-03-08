@@ -30,6 +30,7 @@ const WeeklyHealthReport = lazy(() => import("@/components/WeeklyHealthReport").
 const RiskStratification = lazy(() => import("@/components/RiskStratification").then(m => ({ default: m.RiskStratification })));
 const NaturalLanguageLogger = lazy(() => import("@/components/NaturalLanguageLogger").then(m => ({ default: m.NaturalLanguageLogger })));
 const PredictiveGlucoseAlerts = lazy(() => import("@/components/PredictiveGlucoseAlerts").then(m => ({ default: m.PredictiveGlucoseAlerts })));
+const EngagementDashboard = lazy(() => import("@/components/EngagementDashboard").then(m => ({ default: m.EngagementDashboard })));
 
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;
@@ -189,6 +190,7 @@ const Index = () => {
       case "risk-assessment": return userId ? <RiskStratification userId={userId} /> : null;
       case "quick-log": return userId ? <NaturalLanguageLogger userId={userId} /> : null;
       case "predictive-alerts": return userId ? <PredictiveGlucoseAlerts userId={userId} /> : null;
+      case "engagement": return userId ? <EngagementDashboard userId={userId} /> : null;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

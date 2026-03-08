@@ -130,7 +130,7 @@ export const ConsentManager = () => {
 
       const { error } = await supabase
         .from("profiles")
-        .update({ consent_flags: updatedConsent as unknown as Record<string, unknown> })
+        .update({ consent_flags: JSON.parse(JSON.stringify(updatedConsent)) })
         .eq("user_id", user.id);
 
       if (error) throw error;

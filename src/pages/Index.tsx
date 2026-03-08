@@ -187,6 +187,8 @@ const Index = () => {
       case "exercise-impact": return userId ? <ExerciseImpactScoring userId={userId} /> : null;
       case "weekly-report": return userId ? <WeeklyHealthReport userId={userId} /> : null;
       case "risk-assessment": return userId ? <RiskStratification userId={userId} /> : null;
+      case "quick-log": return userId ? <NaturalLanguageLogger userId={userId} /> : null;
+      case "predictive-alerts": return userId ? <PredictiveGlucoseAlerts userId={userId} /> : null;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

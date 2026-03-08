@@ -1,16 +1,41 @@
 {
-  "name": "DiabeSure",
+  "name": "DiabeSure - Diabetes Management",
   "short_name": "DiabeSure",
-  "description": "Comprehensive diabetes management for Type 2 patients",
+  "description": "Comprehensive diabetes management for Type 2 patients. Track glucose, medications, nutrition, exercise, and connect with your clinician.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#c6198d",
+  "orientation": "any",
+  "categories": ["health", "medical", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
   "icons": [
     {
       "src": "/favicon.ico",
       "sizes": "64x64",
       "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Glucose",
+      "short_name": "Glucose",
+      "url": "/?page=glucose",
+      "description": "Log a glucose reading"
+    },
+    {
+      "name": "Medications",
+      "short_name": "Meds",
+      "url": "/?page=medications",
+      "description": "View and track medications"
+    },
+    {
+      "name": "Messages",
+      "short_name": "Chat",
+      "url": "/?page=messages",
+      "description": "Message your clinician"
     }
   ]
 }

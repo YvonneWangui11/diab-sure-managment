@@ -38,6 +38,7 @@ interface ExerciseTrackingEnhancedProps {
 }
 
 export const ExerciseTrackingEnhanced = ({ userId }: ExerciseTrackingEnhancedProps) => {
+  const { trackActivity } = useStreakTracker();
   const [exercises, setExercises] = useState<ExerciseLog[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();

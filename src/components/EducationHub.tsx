@@ -14,6 +14,8 @@ import {
   Brain
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import jsPDF from "jspdf";
+import { useToast } from "@/hooks/use-toast";
 
 const healthTips = [
   {

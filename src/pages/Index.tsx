@@ -30,6 +30,7 @@ const WeeklyHealthReport = lazy(() => import("@/components/WeeklyHealthReport").
 const RiskStratification = lazy(() => import("@/components/RiskStratification").then(m => ({ default: m.RiskStratification })));
 const NaturalLanguageLogger = lazy(() => import("@/components/NaturalLanguageLogger").then(m => ({ default: m.NaturalLanguageLogger })));
 const PredictiveGlucoseAlerts = lazy(() => import("@/components/PredictiveGlucoseAlerts").then(m => ({ default: m.PredictiveGlucoseAlerts })));
+const EngagementDashboard = lazy(() => import("@/components/EngagementDashboard").then(m => ({ default: m.EngagementDashboard })));
 
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;

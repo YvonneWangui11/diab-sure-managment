@@ -239,11 +239,17 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
               <Button className="w-full justify-start" variant="default" onClick={() => onNavigate?.('glucose')}>
                 <Heart className="h-4 w-4 mr-2" /> Log Glucose Reading
               </Button>
-              <Button className="w-full justify-start" variant="secondary" onClick={() => onNavigate?.('nutrition')}>
+              <Button className="w-full justify-start" variant="secondary" onClick={() => onNavigate?.('quick-log')}>
+                <Sparkles className="h-4 w-4 mr-2" /> Quick Log (AI)
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('nutrition')}>
                 <Apple className="h-4 w-4 mr-2" /> Log a Meal
               </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('exercise')}>
                 <Activity className="h-4 w-4 mr-2" /> Log Exercise
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('predictive-alerts')}>
+                <Bell className="h-4 w-4 mr-2" /> Predictive Alerts
               </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('medications')}>
                 <Pill className="h-4 w-4 mr-2" /> Track Medications

@@ -180,6 +180,11 @@ const Index = () => {
       case "progress": return userId ? <ProgressDashboard userId={userId} /> : null;
       case "education": return <EducationHub />;
       case "profile": return <ProfilePage onSignOut={handleSignOut} />;
+      case "glucose-trends": return userId ? <GlucoseTrendAnalysis userId={userId} /> : null;
+      case "meal-impact": return userId ? <MealImpactCorrelation userId={userId} /> : null;
+      case "exercise-impact": return userId ? <ExerciseImpactScoring userId={userId} /> : null;
+      case "weekly-report": return userId ? <WeeklyHealthReport userId={userId} /> : null;
+      case "risk-assessment": return userId ? <RiskStratification userId={userId} /> : null;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

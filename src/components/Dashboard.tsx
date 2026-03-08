@@ -248,11 +248,23 @@ export const Dashboard = ({ onNavigate }: DashboardProps) => {
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('medications')}>
                 <Pill className="h-4 w-4 mr-2" /> Track Medications
               </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('glucose-trends')}>
+                <BarChart3 className="h-4 w-4 mr-2" /> Glucose Insights
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('meal-impact')}>
+                <Utensils className="h-4 w-4 mr-2" /> Meal Impact
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('exercise-impact')}>
+                <Dumbbell className="h-4 w-4 mr-2" /> Exercise Score
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('weekly-report')}>
+                <FileText className="h-4 w-4 mr-2" /> Weekly Report
+              </Button>
+              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('risk-assessment')}>
+                <Shield className="h-4 w-4 mr-2" /> Risk Assessment
+              </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('messages')}>
                 <MessageSquare className="h-4 w-4 mr-2" /> Messages {unread > 0 && <Badge variant="destructive" className="ml-auto text-xs">{unread}</Badge>}
-              </Button>
-              <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('progress')}>
-                <BarChart3 className="h-4 w-4 mr-2" /> View Progress
               </Button>
               <Button className="w-full justify-start" variant="outline" onClick={() => onNavigate?.('education')}>
                 <BookOpen className="h-4 w-4 mr-2" /> Education Hub

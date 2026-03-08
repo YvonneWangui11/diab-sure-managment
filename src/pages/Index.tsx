@@ -9,6 +9,8 @@ import { ExerciseTrackingEnhanced } from "@/components/ExerciseTrackingEnhanced"
 import { AppointmentViewing } from "@/components/AppointmentViewing";
 import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { EducationHub } from "@/components/EducationHub";
+import { PatientMedicationTracking } from "@/components/PatientMedicationTracking";
+import { MessagingCenter } from "@/components/MessagingCenter";
 import { ProfilePage } from "@/components/ProfilePage";
 import { LandingPage } from "@/components/LandingPage";
 import { AuthPage } from "@/components/AuthPage";
@@ -194,12 +196,16 @@ const Index = () => {
         return <Dashboard onNavigate={setCurrentPage} />;
       case "glucose":
         return userId ? <GlucoseTracking userId={userId} /> : null;
+      case "medications":
+        return userId ? <PatientMedicationTracking userId={userId} /> : null;
       case "nutrition":
         return userId ? <NutritionTrackingEnhanced userId={userId} /> : null;
       case "exercise":
         return userId ? <ExerciseTrackingEnhanced userId={userId} /> : null;
       case "appointments":
         return userId ? <AppointmentViewing userId={userId} /> : null;
+      case "messages":
+        return userId ? <MessagingCenter userRole="patient" /> : null;
       case "progress":
         return userId ? <ProgressDashboard userId={userId} /> : null;
       case "education":

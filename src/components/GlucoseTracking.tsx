@@ -26,6 +26,7 @@ interface GlucoseTrackingProps {
 }
 
 export const GlucoseTracking = ({ userId }: GlucoseTrackingProps) => {
+  const { trackActivity } = useStreakTracker();
   const [glucoseValue, setGlucoseValue] = useState("");
   const [testTime, setTestTime] = useState("fasting");
   const [notes, setNotes] = useState("");

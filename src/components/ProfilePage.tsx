@@ -82,7 +82,7 @@ export const ProfilePage = ({ onSignOut }: ProfilePageProps) => {
             }));
           }
         } else if (role === 'patient') {
-          const { data: patientDetails } = await supabase.from('patient_details').select('*').eq('user_id', user.id).single();
+          const { data: patientDetails } = await supabase.from('patient_details').select('*').eq('user_id', user.id).maybeSingle();
           if (patientDetails) {
             setProfileData(prev => ({
               ...prev,

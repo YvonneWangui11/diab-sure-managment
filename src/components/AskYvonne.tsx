@@ -451,6 +451,13 @@ export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => 
         </div>
       </ScrollArea>
       <div className="border-t bg-card/50 backdrop-blur-sm px-6 py-4">
+        {messages.length > 0 && (
+          <div className="flex justify-end max-w-4xl mx-auto mb-2">
+            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => setMessages([])}>
+              <Trash2 className="h-3 w-3 mr-1" /> Clear chat
+            </Button>
+          </div>
+        )}
         <div className="flex gap-3 max-w-4xl mx-auto">
           {mode === "chat" && (
             <Button onClick={isRecording ? stopRecording : startRecording} disabled={isLoading || isTranscribing} size="lg" variant={isRecording ? "destructive" : "outline"} className="h-12 w-12 rounded-full p-0 shadow-lg hover:shadow-xl transition-all">

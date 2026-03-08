@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.check-data-retention]
 verify_jwt = false
+
+[functions.parse-health-log]
+verify_jwt = false

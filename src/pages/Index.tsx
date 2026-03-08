@@ -228,6 +228,9 @@ const Index = () => {
       case "quick-log": return userId ? <NaturalLanguageLogger userId={userId} /> : null;
       case "predictive-alerts": return userId ? <PredictiveGlucoseAlerts userId={userId} /> : null;
       case "engagement": return userId ? <EngagementDashboard userId={userId} /> : null;
+      case "care-plan": return userId ? <CarePlanView userId={userId} /> : null;
+      case "timeline": return userId ? <HealthTimeline userId={userId} /> : null;
+      case "notifications": return <NotificationPreferences />;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

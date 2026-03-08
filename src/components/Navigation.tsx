@@ -17,10 +17,10 @@ const menuItems = [
   { id: "medications", label: "Meds", icon: Pill },
   { id: "nutrition", label: "Nutrition", icon: Apple },
   { id: "exercise", label: "Exercise", icon: Dumbbell },
+  { id: "glucose-trends", label: "Insights", icon: BarChart3 },
+  { id: "weekly-report", label: "Report", icon: FileText },
   { id: "appointments", label: "Appts", icon: Calendar },
   { id: "messages", label: "Messages", icon: MessageSquare },
-  { id: "progress", label: "Progress", icon: TrendingUp },
-  { id: "education", label: "Learn", icon: BookOpen },
   { id: "profile", label: "Profile", icon: User },
 ];
 

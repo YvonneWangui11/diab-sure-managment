@@ -28,6 +28,8 @@ const MealImpactCorrelation = lazy(() => import("@/components/MealImpactCorrelat
 const ExerciseImpactScoring = lazy(() => import("@/components/ExerciseImpactScoring").then(m => ({ default: m.ExerciseImpactScoring })));
 const WeeklyHealthReport = lazy(() => import("@/components/WeeklyHealthReport").then(m => ({ default: m.WeeklyHealthReport })));
 const RiskStratification = lazy(() => import("@/components/RiskStratification").then(m => ({ default: m.RiskStratification })));
+const NaturalLanguageLogger = lazy(() => import("@/components/NaturalLanguageLogger").then(m => ({ default: m.NaturalLanguageLogger })));
+const PredictiveGlucoseAlerts = lazy(() => import("@/components/PredictiveGlucoseAlerts").then(m => ({ default: m.PredictiveGlucoseAlerts })));
 
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;

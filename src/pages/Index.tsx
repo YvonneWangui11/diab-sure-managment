@@ -23,6 +23,11 @@ const EducationHub = lazy(() => import("@/components/EducationHub").then(m => ({
 const PatientMedicationTracking = lazy(() => import("@/components/PatientMedicationTracking").then(m => ({ default: m.PatientMedicationTracking })));
 const MessagingCenter = lazy(() => import("@/components/MessagingCenter").then(m => ({ default: m.MessagingCenter })));
 const ProfilePage = lazy(() => import("@/components/ProfilePage").then(m => ({ default: m.ProfilePage })));
+const GlucoseTrendAnalysis = lazy(() => import("@/components/GlucoseTrendAnalysis").then(m => ({ default: m.GlucoseTrendAnalysis })));
+const MealImpactCorrelation = lazy(() => import("@/components/MealImpactCorrelation").then(m => ({ default: m.MealImpactCorrelation })));
+const ExerciseImpactScoring = lazy(() => import("@/components/ExerciseImpactScoring").then(m => ({ default: m.ExerciseImpactScoring })));
+const WeeklyHealthReport = lazy(() => import("@/components/WeeklyHealthReport").then(m => ({ default: m.WeeklyHealthReport })));
+const RiskStratification = lazy(() => import("@/components/RiskStratification").then(m => ({ default: m.RiskStratification })));
 
 type UserRole = "patient" | "clinician" | "admin";
 type AuthMode = "patient" | "clinician" | null;
@@ -175,6 +180,11 @@ const Index = () => {
       case "progress": return userId ? <ProgressDashboard userId={userId} /> : null;
       case "education": return <EducationHub />;
       case "profile": return <ProfilePage onSignOut={handleSignOut} />;
+      case "glucose-trends": return userId ? <GlucoseTrendAnalysis userId={userId} /> : null;
+      case "meal-impact": return userId ? <MealImpactCorrelation userId={userId} /> : null;
+      case "exercise-impact": return userId ? <ExerciseImpactScoring userId={userId} /> : null;
+      case "weekly-report": return userId ? <WeeklyHealthReport userId={userId} /> : null;
+      case "risk-assessment": return userId ? <RiskStratification userId={userId} /> : null;
       default: return <Dashboard onNavigate={setCurrentPage} />;
     }
   };

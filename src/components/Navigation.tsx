@@ -15,9 +15,11 @@ export const Navigation = ({ currentPage, onPageChange, onSignOut, roleSwitcher 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: Activity },
     { id: "glucose", label: "Glucose", icon: Droplet },
+    { id: "medications", label: "Medications", icon: Pill },
     { id: "nutrition", label: "Nutrition", icon: Apple },
     { id: "exercise", label: "Exercise", icon: Dumbbell },
     { id: "appointments", label: "Appointments", icon: Calendar },
+    { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "progress", label: "Progress", icon: TrendingUp },
     { id: "education", label: "Education", icon: BookOpen },
     { id: "profile", label: "Profile", icon: User },

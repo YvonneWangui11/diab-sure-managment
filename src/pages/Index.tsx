@@ -196,12 +196,16 @@ const Index = () => {
         return <Dashboard onNavigate={setCurrentPage} />;
       case "glucose":
         return userId ? <GlucoseTracking userId={userId} /> : null;
+      case "medications":
+        return userId ? <PatientMedicationTracking userId={userId} /> : null;
       case "nutrition":
         return userId ? <NutritionTrackingEnhanced userId={userId} /> : null;
       case "exercise":
         return userId ? <ExerciseTrackingEnhanced userId={userId} /> : null;
       case "appointments":
         return userId ? <AppointmentViewing userId={userId} /> : null;
+      case "messages":
+        return userId ? <MessagingCenter userId={userId} userRole="patient" /> : null;
       case "progress":
         return userId ? <ProgressDashboard userId={userId} /> : null;
       case "education":

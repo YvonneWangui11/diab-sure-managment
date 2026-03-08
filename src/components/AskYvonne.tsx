@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import yvonneAvatar from '@/assets/yvonne-avatar.png';
-import { Send, User, Mic, MicOff, Sparkles } from "lucide-react";
+import { Send, User, Mic, MicOff, Sparkles, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
@@ -33,8 +33,16 @@ interface AskYvonneProps {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+const STORAGE_KEY_PREFIX = "yvonne_chat_";
+
 export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const storageKey = `${STORAGE_KEY_PREFIX}${mode}`;
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -44,6 +52,13 @@ export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const { toast } = useToast();
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    } catch { /* quota exceeded */ }
+  }, [messages, storageKey]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -436,6 +451,13 @@ export const AskYvonne = ({ mode = "chat", patientContext }: AskYvonneProps) => 
         </div>
       </ScrollArea>
       <div className="border-t bg-card/50 backdrop-blur-sm px-6 py-4">
+        {messages.length > 0 && (
+          <div className="flex justify-end max-w-4xl mx-auto mb-2">
+            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => setMessages([])}>
+              <Trash2 className="h-3 w-3 mr-1" /> Clear chat
+            </Button>
+          </div>
+        )}
         <div className="flex gap-3 max-w-4xl mx-auto">
           {mode === "chat" && (
             <Button onClick={isRecording ? stopRecording : startRecording} disabled={isLoading || isTranscribing} size="lg" variant={isRecording ? "destructive" : "outline"} className="h-12 w-12 rounded-full p-0 shadow-lg hover:shadow-xl transition-all">

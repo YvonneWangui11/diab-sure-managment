@@ -433,9 +433,9 @@ export const EducationHub = () => {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">{material.pages} pages</span>
-                    <Button size="sm">
+                    <Button size="sm" onClick={() => generatePDF(material)} disabled={downloadingId === material.id}>
                       <Download className="h-4 w-4 mr-2" />
-                      Download PDF
+                      {downloadingId === material.id ? "Generating..." : "Download PDF"}
                     </Button>
                   </div>
                 </CardContent>

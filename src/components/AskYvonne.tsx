@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import yvonneAvatar from '@/assets/yvonne-avatar.png';
-import { Send, User, Mic, MicOff, Sparkles } from "lucide-react";
+import { Send, User, Mic, MicOff, Sparkles, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
